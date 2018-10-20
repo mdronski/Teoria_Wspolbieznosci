@@ -1,17 +1,13 @@
 package com.company.zadDom;
 
-public class Semafor implements ISemafor {
+public class SemaforIf extends Semafor {
 
-    public boolean _stan = true;
-    public int _czeka = 0;
 
-    public Semafor() {
-    }
-
+    @Override
     public synchronized void acquire() {
         _czeka = _czeka + 1;
 
-        while(!_stan){
+        if (!_stan) {
             try {
                 wait();
             } catch (InterruptedException e) {
@@ -22,13 +18,6 @@ public class Semafor implements ISemafor {
         _stan = false;
         _czeka = _czeka - 1;
 
-    }
-
-    public synchronized void release() {
-        _stan = true;
-
-        if (_czeka > 0)
-            this.notify();
     }
 
 }

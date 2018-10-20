@@ -1,52 +1,83 @@
 package com.company.zadDom;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class Wyscig {
     private Integer cnt = 0;
-    private Semafor semafor = new Semafor();
+    private ISemafor semafor;
     private int N = 10000;
     private boolean isSynchronised;
+    int threadNumber = 1;
 
     public Wyscig(){
         this(true);
     }
 
     public Wyscig(boolean isSynchronised){
+        this.semafor = new Semafor();
         this.isSynchronised = isSynchronised;
     }
+
+    public Wyscig(ISemafor semafor){
+        this.semafor = semafor;
+        this.isSynchronised = true;
+    }
+
+    public Wyscig(ISemafor semafor, int threadNumber){
+        this.semafor = semafor;
+        this.isSynchronised = true;
+        this.threadNumber = threadNumber;
+    }
+
 
 
     public void start(){
 
-        Thread incrementator = new Thread(() -> {
-            for (int i = 0; i < N; i++) {
-                if (isSynchronised){
-                    semafor.acqurie();
-                    cnt = cnt + 1;
-                    semafor.release();
-                } else {
-                    cnt = cnt + 1;
-                }
-            }
-        });
+        List<Thread> inceremtators = new ArrayList<>();
+        List<Thread> deceremtators = new ArrayList<>();
 
-        Thread decrementator = new Thread(() -> {
-            for (int i = 0; i < N; i++) {
-                if (isSynchronised){
-                    semafor.acqurie();
-                    cnt = cnt - 1;
-                    semafor.release();
-                } else {
-                    cnt = cnt - 1;
+        for (int n = 0; n < threadNumber; n++) {
+            inceremtators.add(new Thread(() -> {
+                for (int i = 0; i < N; i++) {
+                    if (isSynchronised){
+                        semafor.acquire();
+                        cnt = cnt + 1;
+                        semafor.release();
+                    } else {
+                        cnt = cnt + 1;
+                    }
                 }
-            }
-        });
+            })
+            );
 
-        incrementator.start();
-        decrementator.start();
+            deceremtators.add(new Thread(() -> {
+                for (int i = 0; i < N; i++) {
+                    if (isSynchronised){
+                        semafor.acquire();
+                        cnt = cnt - 1;
+                        semafor.release();
+                    } else {
+                        cnt = cnt - 1;
+                    }
+                }
+            }));
+
+        }
+
+
+        for (int i = 0; i < threadNumber; i++) {
+            inceremtators.get(i).start();
+            deceremtators.get(i).start();
+        }
+
 
         try {
-            incrementator.join();
-            decrementator.join();
+
+            for (int i = 0; i < threadNumber; i++) {
+                inceremtators.get(i).join();
+                deceremtators.get(i).join();
+            }
 
             String synchronised = isSynchronised ? "synchronised" : "no synchronised";
 
