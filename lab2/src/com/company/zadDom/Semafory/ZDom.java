@@ -1,4 +1,4 @@
-package com.company.zadDom;
+package com.company.zadDom.Semafory;
 
 public class ZDom {
     public static void main(String[] args) {

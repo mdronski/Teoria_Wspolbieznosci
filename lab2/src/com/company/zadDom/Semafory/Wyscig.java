@@ -1,4 +1,4 @@
-package com.company.zadDom;
+package com.company.zadDom.Semafory;
 
 import java.util.ArrayList;
 import java.util.List;

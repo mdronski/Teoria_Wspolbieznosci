@@ -1,4 +1,4 @@
-package com.company.zadDom;
+package com.company.zadDom.Semafory;
 
 public class Semafor_IFvsWhile {
     Wyscig w1 = new Wyscig(new Semafor(), 100);

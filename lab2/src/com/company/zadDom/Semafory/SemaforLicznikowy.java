@@ -1,4 +1,4 @@
-package com.company.zadDom;
+package com.company.zadDom.Semafory;
 
 public class SemaforLicznikowy implements ISemafor {
     private Semafor sectionLock = new Semafor();
